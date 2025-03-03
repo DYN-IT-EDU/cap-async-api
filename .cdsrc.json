@@ -1,0 +1,12 @@
+{
+    "export": {
+      "asyncapi": {
+        "application_namespace": "my.catalog",
+        "merged": {
+          "title": "Catalog Service Events",
+          "version": "1.0.0",
+          "description": "AsyncAPI specification for CatalogService"
+        }
+      }
+    }
+  }

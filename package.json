@@ -1,0 +1,43 @@
+{
+  "name": "cap-async-api",
+  "version": "1.0.0",
+  "description": "CAP AsyncAPI Prototype",
+  "dependencies": {
+    "@sap/cds": "^8",
+    "express": "^4",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1.8.0"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch": "cds-watch",
+    "asyncapi": "cds compile srv --service all -o docs --to asyncapi --asyncapi:merged"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "database": ":memory:"
+        }
+      },
+      "uaa": {
+        "kind": "mocked",
+        "impl": "@sap/xssec-mock",
+        "scopes": [
+          "stock_update"
+        ],
+        "users": {
+          "technical_user": {
+            "password": "secret",
+            "roles": [
+              "stock_update"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
