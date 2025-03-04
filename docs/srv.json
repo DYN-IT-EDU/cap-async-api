@@ -9,10 +9,10 @@
   },
   "defaultContentType": "application/json",
   "channels": {
-    "Books.StockUpdated.v1": {
+    "Books.StockUpdated": {
       "subscribe": {
         "message": {
-          "$ref": "#/components/messages/Books.StockUpdated.v1"
+          "$ref": "#/components/messages/Books.StockUpdated"
         }
       }
     }
@@ -102,7 +102,7 @@
       }
     },
     "messages": {
-      "Books.StockUpdated.v1": {
+      "Books.StockUpdated": {
         "x-sap-event-spec-version": "2.0",
         "x-sap-event-source": "/{region}/{applicationNamespace}/{instanceId}",
         "x-sap-event-source-parameters": {
@@ -125,17 +125,17 @@
             }
           }
         },
-        "name": "Books.StockUpdated.v1",
+        "name": "Books.StockUpdated",
         "headers": {
           "type": "object",
           "properties": {
             "type": {
-              "const": "Books.StockUpdated.v1"
+              "const": "Books.StockUpdated"
             }
           }
         },
         "payload": {
-          "$ref": "#/components/schemas/Books.StockUpdated.v1"
+          "$ref": "#/components/schemas/Books.StockUpdated"
         },
         "traits": [
           {
@@ -145,7 +145,7 @@
       }
     },
     "schemas": {
-      "Books.StockUpdated.v1": {
+      "Books.StockUpdated": {
         "type": "object",
         "properties": {
           "bookID": {

@@ -27,7 +27,7 @@ service CatalogService {
   action retryEvent(eventID: UUID) returns String;
 
   @AsyncAPI.EventSpecVersion: '2.0'
-  @AsyncAPI.EventType: 'Books.StockUpdated.v1'
+  @AsyncAPI.EventType: 'Books.StockUpdated'
   event Books.StockUpdated : {
     bookID  : UUID;
     newStock: Integer;

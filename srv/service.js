@@ -4,7 +4,7 @@ module.exports = cds.service.impl(async function () {
     const { Books, FailedEvents } = this.entities
 
     this.before(['emit', 'stockChanged'], async (req) => {
-        if (!req.user?.is('technical_user') || !req.user?.has('stock_update'))
+        if (req.user?.is('technical_user') || req.user?.has('stock_update'))
             throw new Error('403 Forbidden - Missing scope or invalid user')
     })
 
@@ -17,7 +17,7 @@ module.exports = cds.service.impl(async function () {
             return `Stock updated for ${updated.title}`;
         } catch (err) {
             await INSERT.into(FailedEvents).entries({
-                event: 'stockChanged',
+                event: 'Books.StockUpdated',
                 payload: JSON.stringify(req.data),
                 error: err.message
             });
@@ -42,14 +42,21 @@ module.exports = cds.service.impl(async function () {
         }
     })
 
-    this.after('emit', async (msg) => {
-        const subs = await SELECT.from('Subscriptions').where({ event: msg.event })
+    this.on('Books.StockUpdated', async (data) => {
+        console.log('Event received:', data);
+        const subs = await SELECT.from('Subscriptions').where({ event: 'Books.StockUpdated' });
+        console.log(subs);
         for (const sub of subs) {
-            await fetch(sub.url, {
-                method: 'POST',
-                body: JSON.stringify(msg.data),
-                headers: { 'Content-Type': 'application/json' }
-            })
+            try {
+                const response = await fetch(sub.url, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                console.log('Webhook sent to ${sub.url}, status:', response.status);
+            } catch (err) {
+                console.error('Webhook failed for ${sub.url}:', err);
+            }
         }
-    })
+    });  
 })
