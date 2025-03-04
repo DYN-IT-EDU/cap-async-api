@@ -3,11 +3,13 @@ const cds = require('@sap/cds')
 module.exports = cds.service.impl(async function () {
     const { Books, FailedEvents } = this.entities
 
+    // ========== SECURITY ========== //
     this.before(['emit', 'stockChanged'], async (req) => {
         if (req.user?.is('technical_user') || req.user?.has('stock_update'))
             throw new Error('403 Forbidden - Missing scope or invalid user')
     })
 
+    // ========== STOCK CHANGE ========== //
     this.on('stockChanged', async (req) => {
         try {
             const { book, amount } = req.data;
@@ -24,12 +26,14 @@ module.exports = cds.service.impl(async function () {
         }
     });
 
+    // ========== SUBSCRIPTIONS ========== //
     this.on('subscribe', async (req) => {
         const { url, event } = req.data
         await INSERT.into('Subscriptions').entries({ url, event })
         return true
     })
 
+    // ========== EVENT REPROCESSING ========== //
     this.on('retryEvent', async (req) => {
         const { eventID } = req.data
         const event = await SELECT.one.from(FailedEvents).where({ ID: eventID })
@@ -42,6 +46,7 @@ module.exports = cds.service.impl(async function () {
         }
     })
 
+    // ========== WEBHOOK DELIVERY ========== //
     this.on('Books.StockUpdated', async (data) => {
         console.log('Event received:', data);
         const subs = await SELECT.from('Subscriptions').where({ event: 'Books.StockUpdated' });
