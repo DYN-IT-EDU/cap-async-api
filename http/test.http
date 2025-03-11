@@ -1,0 +1,10 @@
+GET http://localhost:4004/odata/v4/catalog/subscribe(url='https://webhook.site/0a5a9dcb-39f3-4f39-bb75-019b82804134',event='Books.StockUpdated')
+
+###
+POST http://localhost:4004/odata/v4/catalog/stockChanged
+Content-Type: application/json
+
+{ 
+    "book": "f8d9f7b0-8569-11ed-9d6a-0800200c9a66",
+    "amount": 5
+}
